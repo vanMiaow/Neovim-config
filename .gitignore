@@ -1,0 +1,5 @@
+/*
+!/.gitignore
+!/init.lua
+!/lua/
+/lua/plugin/lazy-lock.json
