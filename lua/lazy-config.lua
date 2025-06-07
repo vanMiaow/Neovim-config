@@ -20,7 +20,15 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     spec = {
         -- import your plugins
-        { import = "plugin" },
+        { import = "plugin.completion" },
+        { import = "plugin.editor" },
+        { import = "plugin.explorer" },
+        { import = "plugin.git" },
+        { import = "plugin.markdown" },
+        { import = "plugin.misc" },
+        { import = "plugin.treesitter" },
+        { import = "plugin.ui" },
+        { import = "plugin.util" },
     },
     -- lockfile path
     lockfile = vim.fn.stdpath("config") .. "/lua/plugin/lazy-lock.json",
@@ -37,7 +45,6 @@ require("lazy").setup({
 --     url
 --     name
 --     version
---     pin?
 --     submodules?
 --     cond?
 --     main?

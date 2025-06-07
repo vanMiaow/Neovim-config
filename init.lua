@@ -7,6 +7,7 @@ require("filetype")
 -- todo
 -- vscode vim
 -- melcor treesitter
+-- xmake?
 
 -- vim.o
 -- vim.api
