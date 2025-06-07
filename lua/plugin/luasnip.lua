@@ -46,8 +46,11 @@ return {
     opts = {},
     config = function(_,opts)
         require("luasnip").setup(opts)
+        -- load html and tex for markdown
         require("luasnip").filetype_extend("markdown", { "html", "tex" })
+        -- load from friendly-snippets
         require("luasnip.loaders.from_vscode").lazy_load()
+        -- load from user-defined
         require("luasnip.loaders.from_lua").lazy_load({ paths = vim.fn.stdpath("config") .. "/lua/snippet" })
         return
     end,

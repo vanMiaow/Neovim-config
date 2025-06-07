@@ -19,7 +19,7 @@ return {
     },
     lazy = true,
     keys = {
-        { "<leader>s", mode = { "n", "v" }, desc = "Mini surround" }
+        { "<leader>s", mode = { "n", "x" }, desc = "Mini surround" }
     }
 }
 

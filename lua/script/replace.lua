@@ -74,10 +74,10 @@ end
 function module.replace_mode()
     if (vim.api.nvim_get_mode().mode == "n") then
         -- all
-        print(module.replace())
+        vim.notify(module.replace())
     else
         -- visual
-        print(module.replace(vim.fn.line("v"), vim.fn.line(".")))
+        vim.notify(module.replace(vim.fn.line("v"), vim.fn.line(".")))
         vim.api.nvim_input("<esc>")
     end
     return

@@ -51,9 +51,6 @@ return {
     keys = {
         { "[c", prev_diff, mode = "n", expr = true, desc = "Previous diff" },
         { "]c", next_diff, mode = "n", expr = true, desc = "Next diff" },
-        { "<leader>gs", function() require("gitsigns").stage_hunk() return end, mode = "n", desc = "Git stage" },
-        { "<leader>ga", function() require("gitsigns").stage_buffer() return end, mode = "n", desc = "Git add" },
-        { "<leader>gr", function() require("gitsigns").reset_buffer_index() return end, mode = "n", desc = "Git reset" },
         { "<leader>gd", function() require("gitsigns").diffthis() return end, mode = "n", desc = "Git diff" }
     }
 }

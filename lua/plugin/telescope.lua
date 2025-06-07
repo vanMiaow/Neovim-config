@@ -1,5 +1,6 @@
 
 return {
+    -- requires winget ripgrep
     "nvim-telescope/telescope.nvim",
     name = "telescope",
     version = false,
@@ -8,7 +9,6 @@ return {
         return {
             defaults = {
                 sorting_strategy = "ascending",
-                scroll_strategy = "limit",
                 layout_strategy = "horizontal",
                 layout_config = {
                     horizontal = {
@@ -19,12 +19,12 @@ return {
                 dynamic_preview_title = true,
                 default_mappings = {
                     i = {
-                        ["<LeftMouse>"] = {
+                        ["<leftMouse>"] = {
                             actions.mouse_click,
                             type = "action",
                             opts = { expr = true },
                         },
-                        ["<2-LeftMouse>"] = {
+                        ["<2-leftMouse>"] = {
                             actions.double_mouse_click,
                             type = "action",
                             opts = { expr = true },
@@ -37,14 +37,38 @@ return {
                         ["<esc>"] = actions.close
                     }
                 }
+            },
+            pickers = {
+                git_status = {
+                    git_icons = {
+                        -- -- nerd font
+                        -- added = "", -- nf-oct-diff_added
+                        -- deleted = "", -- nf-oct-diff_removed
+                        -- changed = "", -- nf-oct-diff_modified
+                        -- renamed = "", -- nf-oct-diff_renamed
+                        -- untracked = "", -- nf-cod-question
+                        -- unmerged = "", -- nf-oct-git_merge
+                        -- copied = "", -- nf-oct-copy
+                        -- unicode
+                        added = "+",
+                        deleted = "-",
+                        changed = "~",
+                        renamed = "→",
+                        untracked = "?",
+                        unmerged = "ᚶ",
+                        copied = ">"
+                    }
+                }
             }
         }
     end,
     lazy = true,
     dependencies = { "plenary" },
     keys = {
-        { "<leader>ff", "<cmd>Telescope find_files<cr>", mode = "n", desc = "Telescope find files" },
-        { "<leader>fg", "<cmd>Telescope live_grep<cr>", mode = "n", desc = "Telescope live grep" }
+        { "<leader>tf", "<cmd>Telescope find_files<cr>", mode = "n", desc = "Telescope find files" },
+        { "<leader>tg", "<cmd>Telescope git_status<cr>", mode = "n", desc = "Telescope git status" },
+        { "<leader>tl", "<cmd>Telescope live_grep<cr>", mode = "n", desc = "Telescope live grep" },
+        { "<leader>tn", "<cmd>Telescope noice<cr>", mode = "n", desc = "Telescope noice" }
     }
 }
 

@@ -29,10 +29,10 @@ end
 function module.count_mode()
     if (vim.api.nvim_get_mode().mode == "n") then
         -- all
-        print(module.count())
+        vim.notify(module.count())
     else
         -- visual
-        print(module.count(vim.fn.line("v"), vim.fn.line(".")))
+        vim.notify(module.count(vim.fn.line("v"), vim.fn.line(".")))
         vim.api.nvim_input("<esc>")
     end
     return

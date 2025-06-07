@@ -28,7 +28,7 @@ end
 
 -- trim line
 function module.trim_line()
-    print(module.trim(vim.fn.line(".")))
+    vim.notify(module.trim(vim.fn.line(".")))
     return
 end
 
@@ -36,10 +36,10 @@ end
 function module.trim_mode()
     if (vim.api.nvim_get_mode().mode == "n") then
         -- all
-        print(module.trim())
+        vim.notify(module.trim())
     else
         -- visual
-        print(module.trim(vim.fn.line("v"), vim.fn.line(".")))
+        vim.notify(module.trim(vim.fn.line("v"), vim.fn.line(".")))
         vim.api.nvim_input("<esc>")
     end
     return

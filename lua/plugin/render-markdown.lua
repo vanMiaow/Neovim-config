@@ -1,10 +1,11 @@
 
 return {
+    -- requires pip pylatexenc
     "MeanderingProgrammer/render-markdown.nvim",
     name = "render-markdown",
     version = false,
     opts = {
-        sign = {
+        latex = {
             enabled = false
         },
         heading = {
@@ -36,6 +37,9 @@ return {
         },
         pipe_table = {
             preset = "round"
+        },
+        sign = {
+            enabled = false
         }
     },
     lazy = true,

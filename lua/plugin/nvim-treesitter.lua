@@ -1,5 +1,6 @@
 
 return {
+    -- requires npm tree-sitter-cli
     "nvim-treesitter/nvim-treesitter",
     name = "nvim-treesitter",
     version = false,

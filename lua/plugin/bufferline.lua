@@ -54,8 +54,8 @@ return {
                 move_wraps_at_ends = true,
                 offsets = {
                     {
-                        filetype = "NvimTree",
-                        text = "File Explorer",
+                        filetype = "neo-tree",
+                        text = "Explorer",
                         highlight = "Directory",
                         separator = " ",
                     }

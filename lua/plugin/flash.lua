@@ -7,12 +7,8 @@ return {
         modes = {
             search = {
                 enabled = true,
-                highlight = {
-                    backdrop = true
-                },
-                jump = {
-                    nohlsearch = false
-                }
+                highlight = { backdrop = true },
+                jump = { nohlsearch = false }
             },
             char = {
                 enabled = false
@@ -21,8 +17,8 @@ return {
     },
     lazy = true,
     keys = {
-        { "/", mode = "n", desc = "Search forward" },
-        { "?", mode = "n", desc = "Search backward" },
+        { "/", function() vim.opt.hlsearch = true return "/" end, mode = { "n", "x", "o" }, expr = true, desc = "Search forward" },
+        { "?", function() vim.opt.hlsearch = true return "?" end, mode = { "n", "x", "o" }, expr = true, desc = "Search backward" },
         { "f", function() require("flash").jump() end, mode = { "n", "x", "o" }, desc = "Flash" },
         { "r", function() require("flash").remote() end, mode = "o", desc = "Remote Flash" }
     }

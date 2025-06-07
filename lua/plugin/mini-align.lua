@@ -12,7 +12,7 @@ return {
     },
     lazy = true,
     keys = {
-        { "<leader>a", mode = { "n", "v" }, desc = "Mini align" }
+        { "<leader>a", mode = { "n", "x" }, desc = "Mini align" }
     }
 }
 

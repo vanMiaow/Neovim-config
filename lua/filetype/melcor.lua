@@ -13,7 +13,7 @@ function module.setup(buf)
     -- set filetype
     vim.bo[buf].filetype = "melcor"
     -- align table
-    vim.keymap.set({ "n", "v" }, "<localleader>a", module.align_table, { buffer = buf, expr = true, remap = true, desc = "Align table" })
+    vim.keymap.set({ "n", "x" }, "<localleader>a", module.align_table, { buffer = buf, expr = true, remap = true, desc = "Align table" })
     return
 end
 

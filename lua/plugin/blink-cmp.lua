@@ -40,10 +40,9 @@ return {
         cmdline = {
             enabled = true,
             keymap = {
-                preset = "none",
+                preset = "inherit",
                 ["<tab>"] = { "show_and_insert", "select_next", "fallback" },
-                ["<s-tab>"] = { "show_and_insert", "select_prev", "fallback" },
-                ["<c-e>"] = { "cancel", "fallback" }
+                ["<c-h>"] = { "cancel", "fallback" }
             }
         },
         term = {
