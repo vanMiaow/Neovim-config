@@ -21,6 +21,7 @@ return {
     "lewis6991/gitsigns.nvim",
     name = "gitsigns",
     version = false,
+    cond = not vim.g.vscode,
     opts = {
         update_debounce = 10,
         signs = {

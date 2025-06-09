@@ -3,6 +3,7 @@ return {
     "iamcco/markdown-preview.nvim",
     name = "markdown-preview",
     version = false,
+    cond = not vim.g.vscode,
     build = "cd app && npm install && git restore yarn.lock",
     lazy = true,
     ft = "markdown",

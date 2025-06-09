@@ -3,6 +3,7 @@ return {
     "nvim-lualine/lualine.nvim",
     name = "lualine",
     version = false,
+    cond = not vim.g.vscode,
     init = function()
         -- mode
         vim.opt.showmode = false

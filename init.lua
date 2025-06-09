@@ -1,11 +1,14 @@
 
-require("option")
-require("keymap")
-require("lazy-config")
-require("filetype")
+if (vim.g.vscode) then
+    require("vsc")
+else
+    require("option")
+    require("keymap")
+    require("lazy-config")
+    require("filetype")
+end
 
 -- todo
--- vscode vim
 -- melcor treesitter
 -- xmake?
 

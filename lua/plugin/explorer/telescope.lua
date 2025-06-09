@@ -4,6 +4,7 @@ return {
     "nvim-telescope/telescope.nvim",
     name = "telescope",
     version = false,
+    cond = not vim.g.vscode,
     opts = function()
         local actions = require("telescope.actions")
         return {

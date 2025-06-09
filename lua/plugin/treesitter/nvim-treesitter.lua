@@ -4,6 +4,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     name = "nvim-treesitter",
     version = false,
+    -- cond = not vim.g.vscode,
     build = ":TSUpdate",
     opts = {
         ensure_installed = {

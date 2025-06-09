@@ -17,6 +17,7 @@ return {
     "isakbm/gitgraph.nvim",
     name = "gitgraph",
     version = false,
+    cond = not vim.g.vscode,
     opts = {
         symbols = {
             merge_commit = "", -- nf-cod-circle_filled
