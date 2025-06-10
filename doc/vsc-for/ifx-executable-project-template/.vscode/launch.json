@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(Windows) 启动",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/Debug/bin/_BINARY_NAME_Debug.exe",
+            "args": ["${input:file}"],
+            "cwd": "${workspaceFolder}/test",
+            "console": "integratedTerminal"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "file",
+            "type": "promptString",
+            "description": "Enter input file",
+            "default": ""
+        }
+    ]
+}

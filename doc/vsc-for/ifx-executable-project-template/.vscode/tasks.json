@@ -1,0 +1,80 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "reset",
+            "type": "shell",
+            "command": "Remove-Item",
+            "args": [
+                "-Recurse",
+                "${workspaceFolder}/bin/*",
+                ",",
+                "${workspaceFolder}/build/*/*"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "config",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "-G",
+                "MinGW Makefiles",
+                "-S",
+                "${workspaceFolder}/cmake",
+                "-B",
+                "${workspaceFolder}/build/${input:build-type}",
+                "-DCMAKE_BUILD_TYPE=${input:build-type}"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build/${input:build-type}",
+                "--target",
+                "clean"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build/${input:build-type}",
+                "--target",
+                "all"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "install",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build/${input:build-type}",
+                "--target",
+                "install"
+            ],
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "build-type",
+            "type": "pickString",
+            "description": "Select build type",
+            "options": [
+                "Debug",
+                "Release"
+            ],
+            "default": "Debug"
+        }
+    ]
+}

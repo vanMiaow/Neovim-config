@@ -1,5 +1,6 @@
 /*
 !/.gitignore
 !/init.lua
+!/doc/
 !/lua/
 /lua/plugin/lazy-lock.json

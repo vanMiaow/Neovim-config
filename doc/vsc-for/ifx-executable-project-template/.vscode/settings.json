@@ -1,0 +1,38 @@
+{
+    "fortran.linter.compiler": "ifx",
+//  "fortran.linter.includePaths": [
+//      "${workspaceFolder}/build/Debug/mod",
+//      "${workspaceFolder}/build/Release/mod"
+//  ],
+//  "fortran.linter.modOutput": "${workspaceFolder}/build/Linter",
+    "fortran.linter.extraArgs": [
+        "/I\"${workspaceFolder}/build/Debug/mod\"",
+        "/I\"${workspaceFolder}/build/Release/mod\"",
+        "/module:\"${workspaceFolder}/build/Linter\""
+    ],
+    "fortran.formatting.findentArgs": [
+        "--indent=4"
+    ],
+    "intel-corporation.oneapi-environment-configurator.ONEAPI_ROOT": "_ONEAPI_ROOT_",
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": null,
+        "Git Bash": null,
+        "Command Prompt": null,
+        "JavaScript 调试终端": null,
+        "PowerShell ": {
+            "source": "PowerShell",
+            "icon": "terminal-powershell",
+            "args": [
+                "-WorkingDirectory",
+                "${workspaceFolder}/test/",
+                "-NoExit",
+                "-Command",
+                "try { . \"$(code --locate-shell-integration-path pwsh)\" } catch {}"
+            ]
+        }
+    },
+    "terminal.integrated.automationProfile.windows": {
+        "path": "pwsh.exe"
+    },
+    "cmake.ignoreCMakeListsMissing": true
+}
