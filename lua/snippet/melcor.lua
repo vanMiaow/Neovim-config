@@ -106,7 +106,7 @@ return {
             "",
             "END PROGRAM MELGEN",
             "",
-            "PROGRAM MELGEN",
+            "PROGRAM MELCOR",
             "",
             "EXEC_INPUT",
             "EXEC_TITLE  " }), r(k("Title")), t({ "",

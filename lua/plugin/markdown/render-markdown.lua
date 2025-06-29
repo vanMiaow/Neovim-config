@@ -1,6 +1,5 @@
 
 return {
-    -- requires pip pylatexenc
     "MeanderingProgrammer/render-markdown.nvim",
     name = "render-markdown",
     version = false,
