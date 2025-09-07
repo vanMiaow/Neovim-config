@@ -52,7 +52,7 @@ return {
         fuzzy = {
             prebuilt_binaries = {
                 proxy = {
-                    url = "http://127.0.0.1:7890/"
+                    url = "http://127.0.0.1:7899/"
                 }
             }
         }
