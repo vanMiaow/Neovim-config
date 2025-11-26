@@ -2,368 +2,386 @@
 -- luasnip
 local ls = require("luasnip")
 local snippet = ls.snippet
+local s = ls.snippet_node
 local t = ls.text_node
 local i = ls.insert_node
 local c = ls.choice_node
-local s = ls.snippet_node
 local f = ls.function_node
 local d = ls.dynamic_node
 local ex = require("luasnip.extras")
-local l = ex.lambda
-local m = ex.match
 local r = ex.rep
-local k = require("luasnip.nodes.key_indexer").new_key
 
 -- util
 local util = require("script.util")
-local trim = util.trim
 local tofloat = util.tofloat
-local contains = util.contains
 
 -- new line
 local function crlf()
     return t({ "", "" })
 end
 
--- condition node
--- return node true or false based on condition
-local function condition_node(index, key_str, node_ref, condition, node_true, node_false)
-    return d(index, function(args)
-        if (condition(args)) then
-            return s(nil, node_true)
-        else
-            return s(nil, node_false or t(""))
-        end
-    end, node_ref, { key = key_str })
+-- quoted insert node
+local function qi(index, prompt)
+    return s(index, { t("'"), i(1, prompt), t("'") })
 end
 
 -- formula insert node
 -- return caluclated value or default prompt
-function formula_insert(index, key_str, node_ref, prompt, f, digit)
+function fi(index, ref, prompt, f, digit)
     return d(index, function(args)
         local x = tonumber(args[1][1])
-        if (x) then
-            if (f) then
-                return s(nil, i(1, tofloat(f(x), digit)))
-            else
-                return s(nil, i(1, args[1][1]))
-            end
-        else
+        if (not x) then
             return s(nil, i(1, prompt))
-        end
-    end, node_ref, { key = key_str })
-end
-
--- quoted insert node
-local function quoted_insert(index, key_str, prompt)
-    return s(index, { t("'"), i(1, prompt), t("'") }, { key = key_str })
-end
-
--- select CF/TF input
-local function select_cftf(index, key_str, prompt)
-    return c(index, { { t("CF  "), quoted_insert(1, nil, prompt) }, { t("TF  "), quoted_insert(1, nil, prompt) } }, { key = key_str })
-end
-
--- select control volume variable input
-local function select_variable(index, prompt)
-    return d(index, function(args)
-        if (args[1][1] == "Prop-Specified") then
-            return s(nil, select_cftf(1, nil, prompt))
+        elseif (not f) then
+            return s(nil, i(1, args[1][1]))
         else
-            return s(nil, i(1, prompt))
+            return s(nil, i(1, tofloat(f(x), digit)))
         end
-    end, k("ActiveSwitch"))
+    end, ref)
+end
+
+-- area to diameter
+function a2d(area)
+    return 2 * math.sqrt(area / math.pi)
+end
+
+-- select CF/TF
+local function ct(index, prompt)
+    return s(index, { c(1, { t("CF"), t("TF") }), t("  "), qi(2, prompt) })
 end
 
 return {
     ---- Melcor Input ----
     snippet({ trig = "PROGRAM", desc = "Melcor Input" }, {
-        t({ "PROGRAM MELGEN",
-            "",
-            "EXEC_INPUT",
-            "EXEC_TITLE   " }), quoted_insert(1, "Title", "[TITLE]"), t({ "",
-            "EXEC_TSTART  " }), i(2, "0.0", { key = "TimeStart" }), t({ "",
-            "EXEC_DTTIME  0.1",
-            "",
-            "MP_INPUT",
-            "MP_ID  Concrete",
-            "MP_ID  Stainless-Steel",
-            "",
-            "NCG_INPUT",
-            "NCG_ID  N2",
-            "NCG_ID  O2",
-            "",
-            "CVH_INPUT",
-            "" }), i(0), t({ "",
-            "",
-            "FL_INPUT",
-            "",
-            "HS_INPUT",
-            "",
-            "CF_INPUT",
-            "",
-            "TF_INPUT",
-            "",
-            "END PROGRAM MELGEN",
-            "",
-            "PROGRAM MELCOR",
-            "",
-            "EXEC_INPUT",
-            "EXEC_TITLE  " }), r(k("Title")), t({ "",
-            "EXEC_TIME  2",
-            "           !  TIME  DTMAX  DTMIN  DTEDT  DTPLT  DTRST",
-            "           1  " }), r(k("TimeStart")), t({ "  1.0E-01  1.0E-06  1.0E+03  1.0E-01  1.0E+03",
-            "           2  " }), m(k("TimeStart"), function(args) local ts = tonumber(args[1][1]) return (ts and ts < 0) end, "0.0", "1.0"), t({ "  1.0E-01  1.0E-06  1.0E+03  1.0E-01  1.0E+03",
-            "EXEC_TEND  " }), i(3, "1000.0"), t({ "",
-            "EXEC_CPULIM   86400.0",
-            "EXEC_CPULEFT  60.0",
-            "",
-            "END PROGRAM MELCOR" })
+        t("PROGRAM MELGEN"), crlf(),
+        crlf(),
+        t("EXEC_INPUT"), crlf(),
+        t("EXEC_TITLE   "), qi(1, "[TITLE]"), crlf(),
+        t("EXEC_TSTART  "), i(2, "0.0"), crlf(),
+        t("EXEC_DTTIME  0.1"), crlf(),
+        crlf(),
+        t("MP_INPUT"), crlf(),
+        t("MP_ID  Concrete"), crlf(),
+        t("MP_ID  Stainless-Steel"), crlf(),
+        crlf(),
+        t("NCG_INPUT"), crlf(),
+        t("NCG_ID  N2"), crlf(),
+        t("NCG_ID  O2"), crlf(),
+        crlf(),
+        t("CVH_INPUT"), crlf(),
+        i(0), crlf(),
+        crlf(),
+        t("FL_INPUT"), crlf(),
+        crlf(),
+        t("HS_INPUT"), crlf(),
+        crlf(),
+        t("CF_INPUT"), crlf(),
+        crlf(),
+        t("TF_INPUT"), crlf(),
+        crlf(),
+        t("END PROGRAM MELGEN"), crlf(),
+        crlf(),
+        t("PROGRAM MELCOR"), crlf(),
+        crlf(),
+        t("EXEC_INPUT"), crlf(),
+        t("EXEC_TITLE  "), r(1), crlf(),
+        t("EXEC_TIME  2"), crlf(),
+        t("           !  TIME  DTMAX  DTMIN  DTEDT  DTPLT  DTRST"), crlf(),
+        t("           1  "), r(2), t("  1.0E-01  1.0E-06  1.0E+03  1.0E-01  1.0E+03"), crlf(),
+        t("           2  "), f(function(args)
+            local time = tonumber(args[1][1])
+            if (time and time >= 0) then
+                return tofloat(time + 1)
+            else
+                return "0.0"
+            end
+        end, 2), t("  1.0E-01  1.0E-06  1.0E+03  1.0E-01  1.0E+03"), crlf(),
+        t("EXEC_TEND  "), i(3, "1000.0"), crlf(),
+        t("EXEC_CPULIM   86400.0"), crlf(),
+        t("EXEC_CPULEFT  60.0"), crlf(),
+        crlf(),
+        t("END PROGRAM MELCOR"), crlf()
     }),
     ---- Control Volume ----
     snippet({ trig = "CV_ID", desc = "Control Volume" }, {
         ---- CV_ID ----
-        t("CV_ID   "), quoted_insert(1, nil, "[NAME]"), t("  "), i(2, "[NO]"), crlf(),
+        t("CV_ID   "), qi(1, "[NAME]"), t("  "), i(2, "[NO]"), crlf(),
         ---- CV_FLD ----
         t("CV_FLD  "), c(3, { t("Water"), t("LBE") }), crlf(),
         ---- CV_THR ----
-        t("CV_THR  NonEquil  Fog  "), c(4, { t("Active"), t("Time-Indep"), t("Prop-Specified") }, { key = "ActiveSwitch" }), crlf(),
+        t("CV_THR  NonEquil  Fog  "), c(4, { t("Active"), t("Time-Indep"), t("Prop-Specified") }), crlf(),
         ---- CV_PAS ----
-        t("CV_PAS  Separate  "), c(5, { t("OnlyPool"), t("OnlyAtm"), t("PoolAndAtm") }, { key = "PhaseSwitch" }),
-        condition_node(6, nil, k("PhaseSwitch"), function(args) return (args[1][1] ~= "OnlyAtm") end, { t("  "), c(1, { t("Subcooled"), t("Saturated") }, { key = "WaterState" }) }, t("", { key = "WaterState" })),
-        condition_node(7, nil, k("PhaseSwitch"), function(args) return (args[1][1] ~= "OnlyPool") end, { t("  "), c(1, { t("Superheated"), t("Saturated") }, { key = "VaporState" }) }, t("", { key = "VaporState" })),
-        crlf(),
+        t("CV_PAS  Separate  "), c(5, { t("PoolAndAtm"), t("OnlyPool"), t("OnlyAtm") }), d(6, function(args)
+            if (args[1][1] == "OnlyAtm") then
+                return s(nil, t(""))
+            else
+                return s(nil, { t("  "), c(1, { t("Subcooled"), t("Saturated") }) })
+            end
+        end, 5), d(7, function(args)
+            if (args[1][1] == "OnlyPool") then
+                return s(nil, t(""))
+            else
+                return s(nil, { t("  "), c(1, { t("Superheated"), t("Saturated") }) })
+            end
+        end, 5), crlf(),
         ---- CV_PTD ----
-        t("CV_PTD  PVOL  "), select_variable(8, "[PVOL]"), crlf(),
+        t("CV_PTD  PVOL  "), d(8, function(args)
+            if (args[1][1] == "Prop-Specified") then
+                return s(nil, ct(1, "[PVOL]"))
+            else
+                return s(nil, i(1, "[PVOL]"))
+            end
+        end, 4), crlf(),
         ---- CV_PAD ----
         d(9, function(args)
-            if (args[1][1] == "Subcooled") then
-                return s(nil, { t("CV_PAD        "), select_variable(1, "[TPOL]"), crlf() })
-            else
+            if (args[1][1] ~= "  Subcooled") then
                 return s(nil, t(""))
+            elseif (args[2][1] == "Prop-Specified") then
+                return s(nil, { t("CV_PAD        "), ct(1, "[TPOL]"), crlf() })
+            else
+                return s(nil, { t("CV_PAD        "), i(1, "[TPOL]"), crlf() })
             end
-        end, k("WaterState")),
-        ---- CV_AAD & CV_NCG ----
+        end, { 6, 4 }),
+        ---- CV_AAD ----
         d(10, function(args)
-            if (args[1][1] == "Superheated") then
-                if (args[2][1] == "Prop-Specified") then
-                    return s(nil, {
-                        t("CV_AAD  TATM  "), select_cftf(1, nil, "[TATM]"), crlf(),
-                        t("CV_NCG  2  PH2O  "), select_cftf(2, nil, "[PH2O]"), crlf(),
-                        t("        1   N2   "), select_cftf(3, nil, "[MLFR]"), crlf(),
-                        t("        2   O2   "), select_cftf(4, nil, "[MLFR]"), crlf()
-                    })
-                else
-                    return s(nil, {
-                        t("CV_AAD  TATM  "), i(1, "[TATM]"), crlf(),
-                        t("CV_NCG  2  RHUM  "), i(2, "[RHUM]"), crlf(),
-                        t("        1   N2   0.79"), crlf(),
-                        t("        2   O2   0.21"), crlf()
-                    })
-                end
-            else
+            if (args[1][1] ~= "  Superheated") then
                 return s(nil, t(""))
+            elseif (args[2][1] == "Prop-Specified") then
+                return s(nil, { t("CV_AAD  TATM  "), ct(1, "[TATM]"), crlf() })
+            else
+                return s(nil, { t("CV_AAD  TATM  "), i(1, "[TATM]"), crlf() })
             end
-        end, { k("VaporState"), k("ActiveSwitch") }),
-        ---- CV_BND ----
+        end, { 7, 4 }),
+        ---- CV_NCG ----
         d(11, function(args)
-            if (args[1][1] == "PoolAndAtm") then
-                return s(nil, { t("CV_BND  ZPOL  "), select_variable(1, "[ZPOL]"), crlf() })
-            else
+            if (args[1][1] == "OnlyPool") then
                 return s(nil, t(""))
+            elseif (args[2][1] == "Prop-Specified") then
+                return s(nil, { t("CV_NCG  2  PH2O  "), ct(1, "[PH2O]"), crlf(),
+                                t("        1   N2   "), ct(2, "[MLFR]"), crlf(),
+                                t("        2   O2   "), ct(3, "[MLFR]"), crlf() })
+            else
+                return s(nil, { t("CV_NCG  2  RHUM  "), i(1, "[RHUM]"), crlf(),
+                                t("        1   N2   0.79"), crlf(),
+                                t("        2   O2   0.21"), crlf() })
             end
-        end, k("PhaseSwitch")),
+        end, { 5, 4 }),
+        ---- CV_BND ----
+        d(12, function(args)
+            if (args[1][1] ~= "PoolAndAtm") then
+                return s(nil, t(""))
+            elseif (args[2][1] == "Prop-Specified") then
+                return s(nil, { t("CV_BND  ZPOL  "), ct(1, "[ZPOL]"), crlf() })
+            else
+                return s(nil, { t("CV_BND  ZPOL  "), i(1, "[ZPOL]"), crlf() })
+            end
+        end, { 5, 4 }),
         ---- CV_VAT ----
         t("CV_VAT  2"), crlf(),
-        t("        1  "), i(12, "[ZLW]"), t("  0.0"), crlf(),
-        t("        2  "), i(13, "[ZHI]"), t("  "), i(14, "[VOL]")
+        t("        1  "), i(13, "[ZLW]"), t("  0.0"), crlf(),
+        t("        2  "), i(14, "[ZHI]"), t("  "), i(15, "[VOL]")
     }),
     ---- Flow Path ----
     snippet({ trig = "FL_ID", desc = "Flow Path" }, {
         ---- FL_ID ----
-        t("FL_ID   "), quoted_insert(1, nil, "[NAME]"), t("  "), i(2, "[NO]"), crlf(),
+        t("FL_ID   "), qi(1, "[NAME]"), t("  "), i(2, "[NO]"), crlf(),
         ---- FL_FT ----
-        t("FL_FT   "), quoted_insert(3, nil, "[CVFM]"), t("  "), quoted_insert(4, nil, "[CVTO]"), t("  "), i(5, "[ZFM]", { key = "ZFrom" }), t("  "), formula_insert(6, nil, k("ZFrom"), "[ZTO]"), crlf(),
+        t("FL_FT   "), qi(3, "[CVFM]"), t("  "), qi(4, "[CVTO]"), t("  "), i(5, "[ZFM]"), t("  "), fi(6, 5, "[ZTO]"), crlf(),
         ---- FL_GEO ----
-        t("FL_GEO  "), i(7, "[AREA]", { key = "Area" }), t("  "), i(8, "[LEN]", { key = "Length" }), t("  "), i(9, "[OPEN]"), t("  "),
-        formula_insert(10, "HeightFrom", k("Area"), "[HFM]", function(x) return (2 * math.sqrt(x / math.pi)) end, 6), t("  "),
-        formula_insert(11, nil, k("HeightFrom"), "[HTO]"), crlf(),
+        t("FL_GEO  "), i(7, "[AREA]"), t("  "), i(8, "[LEN]"), t("  "), i(9, "[OPEN]"), t("  "), fi(10, 7, "[HFM]", a2d, 6), t("  "), fi(11, 7, "[HTO]", a2d, 6), crlf(),
         ---- FL_JSW ----
         t("FL_JSW  "), c(12, { t("0"), t("3") }), t("  NoBubbleRise  NoBubbleRise ! 0-vert 3-horiz"), crlf(),
         ---- FL_USL ----
-        t("FL_USL  "), i(13, "[LOSF]", { key = "LossForward" }), t("  "), formula_insert(14, nil, k("LossForward"), "[LOSR]"), crlf(),
+        t("FL_USL  "), i(13, "[LOSF]"), t("  "), fi(14, 13, "[LOSR]"), crlf(),
         ---- FL_SEG ----
         t("FL_SEG  1"), crlf(),
-        t("        1  "),
-        formula_insert(15, "SegmentArea", k("Area"), "[SARA]"), t("  "),
-        formula_insert(16, nil, k("Length"), "[SLEN]"), t("  "),
-        formula_insert(17, nil, k("SegmentArea"), "[SHYD]", function(x) return (2 * math.sqrt(x / math.pi)) end, 6)
+        t("        1  "), fi(15, 7, "[SARA]"), t("  "), fi(16, 8, "[SLEN]"), t("  "), fi(17, 15, "[SHYD]", a2d, 6)
     }),
     ---- Valve ----
     snippet({ trig = "FL_VLV", desc = "Valve" }, {
         ---- FL_VLV ----
         t("FL_VLV  1"), crlf(),
-        t("        1  "), quoted_insert(1, nil, "[VLV]"), t("  "), quoted_insert(2, nil, "[FL]"), t("  NoTrip  "), quoted_insert(3, nil, "[CF]"), t("")
+        t("        1  "), qi(1, "[VLV]"), t("  "), qi(2, "[FL]"), t("  NoTrip  "), qi(3, "[CF]"), t("")
     }),
     ---- Pump ----
     snippet({ trig = "FL_PMP", desc = "Pump" }, {
         ---- FL_PMP ----
         t("FL_PMP  1"), crlf(),
-        t("        1  "), quoted_insert(1, nil, "[PMP]"), t("  "), quoted_insert(2, nil, "[FL]"), t("  Quick-CF  "), quoted_insert(3, nil, "[CF]"), t("")
+        t("        1  "), qi(1, "[PMP]"), t("  "), qi(2, "[FL]"), t("  Quick-CF  "), qi(3, "[CF]"), t("")
     }),
     ---- Time Dependent Flow Path ----
     snippet({ trig = "FL_VTM", desc = "Time Dependent Flow Path" }, {
         ---- FL_VTM ----
         t("FL_VTM  1"), crlf(),
-        t("        1  "), quoted_insert(1, nil, "[FL]"), t("  "), select_cftf(2, nil, "[VEL]")
+        t("        1  "), qi(1, "[FL]"), t("  "), ct(2, "[VEL]")
     }),
     ---- Hest Structure ----
     snippet({ trig = "HS_ID", desc = "Heat Structure" }, {
         ---- HS_ID ----
-        t("HS_ID   "), quoted_insert(1, nil, "[NAME]"), t("  "), i(2, "[NO]"), crlf(),
+        t("HS_ID   "), qi(1, "[NAME]"), t("  "), i(2, "[NO]"), crlf(),
         ---- HS_GD ----
-        t("HS_GD   "), c(3, { t("Rectangular"), t("Cylindrical"), t("Spherical"), t("BottomHalfSphere"), t("TopHalfSphere") }, { key = "Geometry" }), t("  Yes"), crlf(),
+        t("HS_GD   "), c(3, { t("Rectangular"), t("Cylindrical"), t("Spherical"), t("BottomHalfSphere"), t("TopHalfSphere") }), t("  Yes"), crlf(),
         ---- HS_EOD ----
         t("HS_EOD  "), i(4, "[ALT]"), t("  "), i(5, "[ALP]"), crlf(),
         ---- HS_SRC ----
-        t("HS_SRC  "),
-        c(6, {
-            t("No"),
-            { t("CF"), t("  "), quoted_insert(1, nil, "[SRC]"), t("  1.0") },
-            { t("TF"), t("  "), quoted_insert(1, nil, "[SRC]"), t("  1.0") }
-        }, { key = "SourceType" }), crlf(),
+        t("HS_SRC  "), c(6, { t("No"),  t("CF"), t("TF") }), d(7, function(args)
+            if (args[1][1] == "No") then
+                return s(nil, t(""))
+            else
+                return s(nil, { t("  "), qi(1, "[SRC]"), t("  1.0") })
+            end
+        end, 6), crlf(),
         ---- HS_ND ----
-        t("HS_ND   "), i(7, "[NN]", { key = "NumberNodes" }), t("  2"), crlf(),
-        t("        1  1  "), i(8, "[XL]"), t("  "), i(9, "[TL]", { key = "TemperatureLeft" }), t("  "), i(10, "[MAT]"),
-        f(function(args)
+        t("HS_ND   "), i(8, "[NN]"), t("  2"), crlf(),
+        t("        1  1  "), i(9, "[XL]"), t("  "), i(10, "[TL]"), t("  "), i(11, "[MAT]"), f(function(args)
+            local n = tonumber(args[2][1])
             if (args[1][1] == "No") then
                 return ""
+            elseif (n and n > 1) then
+                return "  " .. tofloat(1 / (n - 1))
             else
-                local n = tonumber(args[2][1])
-                if (n and n > 1) then
-                    return "  " .. tofloat(1 / (n - 1))
-                else
-                    return "  [NaN]"
-                end
+                return "  [QFRC]"
             end
-        end, { k("SourceType"), k("NumberNodes") }), crlf(),
-        t("        2  "), r(k("NumberNodes")), t("  "), i(11, "[XR]"), t("  "), formula_insert(12, nil, k("TemperatureLeft"), "[TR]"), crlf(),
+        end, { 6, 8 }), crlf(),
+        t("        2  "), r(8), t("  "), i(12, "[XR]"), t("  "), fi(13, 10, "[TR]"), crlf(),
         ---- HS_FT ----
         t("HS_FT   Off"), crlf(),
         ---- HS_LB ----
-        t("HS_LB   "),
-        c(13, { t("Symmetry"), t("CalcCoefHS"), t("CoefCF"), t("SourCF"), t("FluxCF"), t("TempCF"), t("CoefTimeTF"), t("CoefTempTF"), t("SourTimeTF"), t("FluxTimeTF"), t("TempTimeTF") }, { key = "LeftBoundaryCondition" }),
-        d(14, function(args)
+        t("HS_LB   "), c(14, { t("Symmetry"), t("CalcCoefHS"), t("CoefCF"), t("SourCF"), t("FluxCF"), t("TempCF"), t("CoefTimeTF"), t("CoefTempTF"), t("SourTimeTF"), t("FluxTimeTF"), t("TempTimeTF") }), d(15, function(args)
             if (args[1][1]:sub(-2) == "CF") then
-                return s(nil, { t("  "), i(1, "[CF]") })
+                return s(nil, { t("  "), qi(1, "[CF]") })
             elseif (args[1][1]:sub(-2) == "TF") then
-                return s(nil, { t("  "), i(1, "[TF]") })
+                return s(nil, { t("  "), qi(1, "[TF]") })
             else
                 return s(nil, t(""))
             end
-        end, k("LeftBoundaryCondition")),
-        d(15, function(args)
-            if (contains({ "Symmetry", "TempCF", "TempTimeTF" }, args[1][1])) then
+        end, 14), d(16, function(args)
+            if (args[1][1] == "Symmetry" or args[1][1]:sub(1, 4) == "Temp") then
                 return s(nil, t(""))
-            elseif (contains({ "FluxCF", "FluxTimeTF" }, args[1][1])) then
-                return s(nil, { t("  "), c(1, { t("No"), i(1, "[CV]") }) })
+            elseif (args[1][1]:sub(1, 4) == "Flux") then
+                return s(nil, { t("  "), c(1, { t("No"), qi(1, "[CV]") }) })
             else
-                return s(nil, { t("  "), i(1, "[CV]") })
+                return s(nil, { t("  "), qi(1, "[CV]") })
             end
-        end, k("LeftBoundaryCondition"), { key = "LeftBoundaryVolume" }),
-        condition_node(16, nil, k("LeftBoundaryCondition"), function(args) return (contains({ "CalcCoefHS", "CoefCF", "SourCF", "CoefTimeTF", "CoefTempTF", "SourTimeTF" }, args[1][1])) end, { t("  "), c(1, { t("Yes"), t("No") }) }), crlf(),
+        end, 14), d(17, function(args)
+            if (args[1][1] == "Symmetry" or args[1][1]:sub(1, 4) == "Temp" or args[1][1]:sub(1, 4) == "Flux") then
+                return s(nil, t(""))
+            else
+                return s(nil, { t("  "), c(1, { t("Yes"), t("No") }) })
+            end
+        end, 14), crlf(),
         ---- HS_LBP ----
         t("HS_LBP  Int  0.05  0.95"), crlf(),
         ---- HB_LBS ----
-        d(17, function(args)
-            if (contains({ "", "  No" }, args[1][1])) then
+        d(18, function(args)
+            if (args[1][1] == "" or args[1][1] == "  No") then
                 return s(nil, t(""))
             elseif (args[2][1] == "Rectangular") then
                 return s(nil, { t("HS_LBS  "), i(1, "[AREA]"), t("  "), i(2, "[CLEN]"), t("  "), i(3, "[ALEN]"), crlf() })
-            else
+            elseif (args[2][1] == "Cylindrical") then
                 return s(nil, { t("HS_LBS  1.0  "), i(1, "[CLEN]"), t("  "), i(2, "[ALEN]"), crlf() })
+            else
+                return s(nil, { t("HS_LBS  1.0  "), i(1, "[CLEN]"), t("  1.0"), crlf() })
             end
-        end, { k("LeftBoundaryVolume"), k("Geometry") }),
+        end, { 16, 3 }),
         ---- HS_RB ----
-        t("HS_RB   "),
-        c(18, { t("Symmetry"), t("CalcCoefHS"), t("CoefCF"), t("SourCF"), t("FluxCF"), t("TempCF"), t("CoefTimeTF"), t("CoefTempTF"), t("SourTimeTF"), t("FluxTimeTF"), t("TempTimeTF") }, { key = "RightBoundaryCondition" }),
-        d(19, function(args)
+        t("HS_RB   "), c(19, { t("Symmetry"), t("CalcCoefHS"), t("CoefCF"), t("SourCF"), t("FluxCF"), t("TempCF"), t("CoefTimeTF"), t("CoefTempTF"), t("SourTimeTF"), t("FluxTimeTF"), t("TempTimeTF") }), d(20, function(args)
             if (args[1][1]:sub(-2) == "CF") then
-                return s(nil, { t("  "), i(1, "[CF]") })
+                return s(nil, { t("  "), qi(1, "[CF]") })
             elseif (args[1][1]:sub(-2) == "TF") then
-                return s(nil, { t("  "), i(1, "[TF]") })
+                return s(nil, { t("  "), qi(1, "[TF]") })
             else
                 return s(nil, t(""))
             end
-        end, k("RightBoundaryCondition")),
-        d(20, function(args)
-            if (contains({ "Symmetry", "TempCF", "TempTimeTF" }, args[1][1])) then
+        end, 19), d(21, function(args)
+            if (args[1][1] == "Symmetry" or args[1][1]:sub(1, 4) == "Temp") then
                 return s(nil, t(""))
-            elseif (contains({ "FluxCF", "FluxTimeTF" }, args[1][1])) then
-                return s(nil, { t("  "), c(1, { t("No"), i(1, "[CV]") }) })
+            elseif (args[1][1]:sub(1, 4) == "Flux") then
+                return s(nil, { t("  "), c(1, { t("No"), qi(1, "[CV]") }) })
             else
-                return s(nil, { t("  "), i(1, "[CV]") })
+                return s(nil, { t("  "), qi(1, "[CV]") })
             end
-        end, k("RightBoundaryCondition"), { key = "RightBoundaryVolume" }),
-        condition_node(21, nil, k("RightBoundaryCondition"), function(args) return (contains({ "CalcCoefHS", "CoefCF", "SourCF", "CoefTimeTF", "CoefTempTF", "SourTimeTF" }, args[1][1])) end, { t("  "), c(1, { t("Yes"), t("No") }) }), crlf(),
+        end, 19), d(22, function(args)
+            if (args[1][1] == "Symmetry" or args[1][1]:sub(1, 4) == "Temp" or args[1][1]:sub(1, 4) == "Flux") then
+                return s(nil, t(""))
+            else
+                return s(nil, { t("  "), c(1, { t("Yes"), t("No") }) })
+            end
+        end, 19), crlf(),
         ---- HS_RBP ----
-        t("HS_RBP  Ext  0.05  0.95"), crlf(),
-        ---- HB_LBS ----
-        d(22, function(args)
-            if (contains({ "", "  No" }, args[1][1])) then
+        t("HS_RBP  Int  0.05  0.95"),
+        ---- HB_RBS ----
+        d(23, function(args)
+            if (args[1][1] == "" or args[1][1] == "  No") then
                 return s(nil, t(""))
             elseif (args[2][1] == "Rectangular") then
-                return s(nil, { t("HS_RBS  "), i(1, "[AREA]"), t("  "), i(2, "[CLEN]"), t("  "), i(3, "[ALEN]") })
+                return s(nil, { crlf(), t("HS_RBS  "), i(1, "[AREA]"), t("  "), i(2, "[CLEN]"), t("  "), i(3, "[ALEN]") })
+            elseif (args[2][1] == "Cylindrical") then
+                return s(nil, { crlf(), t("HS_RBS  1.0  "), i(1, "[CLEN]"), t("  "), i(2, "[ALEN]") })
             else
-                return s(nil, { t("HS_RBS  1.0  "), i(1, "[CLEN]"), t("  "), i(2, "[ALEN]") })
+                return s(nil, { crlf(), t("HS_RBS  1.0  "), i(1, "[CLEN]"), t("  1.0") })
             end
-        end, { k("RightBoundaryVolume"), k("Geometry") })
+        end, { 21, 3 })
     }),
     ---- Control Function ----
     snippet({ trig = "CF_ID", desc = "Control Function" }, {
         ---- CF_ID ----
-        t("CF_ID   "), quoted_insert(1, nil, "[NAME]"), t("  "), i(2, "[NO]"), t("  "),
-        c(3, { t("Equals"), t("Tab-Fun"), t("Add"), t("Multiply"), t("Divide"), t("Formula"), t("Equals ! Const"), t("SignI ! Open-At"), t("SignI ! Close-At") }, { key = "Type" }), crlf(),
+        t("CF_ID   "), qi(1, "[NAME]"), t("  "), i(2, "[NO]"), t("  "), c(3, { t("Equals"), t("Tab-Fun"), t("Add"), t("Multiply"), t("Divide"), t("Formula"), t("Equals ! Const"), t("SignI ! Open-At"), t("SignI ! Close-At") }), crlf(),
         ---- CF_SAI ----
-        d(4, function(args)
+        t("CF_SAI  "), d(4, function(args)
             if (args[1][1] == "Equals ! Const") then
-                return s(nil, { t("CF_SAI  0.0  "), i(1, "[CONST]", { key = "Constant" }), t("  "), r(k("Constant")) })
+                return s(nil, { t("0.0  "), i(1, "[CONST]"), t("  "), r(1) })
             elseif (args[1][1] == "SignI ! Open-At") then
-                return s(nil, { t("CF_SAI  -0.5  0.5  0.0") })
+                return s(nil, t("-0.5  0.5  0.0"))
             elseif (args[1][1] == "SignI ! Close-At") then
-                return s(nil, { t("CF_SAI  0.5  0.5  1.0") })
+                return s(nil, t("0.5  0.5  1.0"))
             else
-                return s(nil, { t("CF_SAI  "), i(1, "[SCAL]"), t("  "), i(2, "[ADCN]"), t("  "), i(3, "[INIT]") })
+                return s(nil, { i(1, "[SCAL]"), t("  "), i(2, "[ADCN]"), t("  "), i(3, "[INIT]") })
             end
-        end, k("Type")), crlf(),
+        end, 3), crlf(),
         ---- CF_MSC ----
-        condition_node(5, nil, k("Type"), function(args) return (args[1][1] == "Tab-Fun") end, { t("CF_MSC  "), i(1, "[TF]"), crlf() }),
+        d(5, function(args)
+            if (args[1][1] ~= "Tab-Fun") then
+                return s(nil, t(""))
+            else
+                return s(nil, { t("CF_MSC  "), i(1, "[TF]"), crlf() })
+            end
+        end, 3),
         ---- CF_ARG ----
         d(6, function(args)
-            if (args[1][1] == "Equals ! Const") then
-                return s(nil, { t("CF_ARG  1"), crlf(), t("        1  EXEC-TIME  0.0  0.0") })
-            elseif (args[1][1] == "SignI ! Open-At" or args[1][1] == "SignI ! Close-At") then
-                return s(nil, { t("CF_ARG  1"), crlf(), t("        1  EXEC-TIME  -1.0  "), i(1, "[TIME]") })
-            elseif (args[1][1] == "Formula") then
+            if (args[1][1] == "Formula") then
                 return s(nil, t(""))
+            elseif (args[1][1] == "Equals ! Const") then
+                return s(nil, { t("CF_ARG  1"), crlf(),
+                                t("        1  EXEC-TIME  0.0  0.0") })
+            elseif (args[1][1] == "SignI ! Open-At" or args[1][1] == "SignI ! Close-At") then
+                return s(nil, { t("CF_ARG  1"), crlf(),
+                                t("        1  EXEC-TIME  -1.0  "), i(1, "[TIME]") })
             elseif (args[1][1] == "Equals" or args[1][1] == "Tab-Fun") then
-                return s(nil, { t("CF_ARG  1"), crlf(), t("        1  "), i(1, "[ARG]"), t("  "), i(2, "[SCAL]"), t("  "), i(3, "[ADCN]") })
+                return s(nil, { t("CF_ARG  1"), crlf(),
+                                t("        1  "), i(1, "[ARG]"), t("  "), i(2, "[SCAL]"), t("  "), i(3, "[ADCN]") })
             else
-                return s(nil, { t("CF_ARG  2"), crlf(), t("        1  "), i(1, "[ARG]"), t("  "), i(2, "[SCAL]"), t("  "), i(3, "[ADCN]"), crlf(), t("        2  "), i(4, "[ARG]"), t("  "), i(5, "[SCAL]"), t("  "), i(6, "[ADCN]") })
+                return s(nil, { t("CF_ARG  2"), crlf(),
+                                t("        1  "), i(1, "[ARG]"), t("  "), i(2, "[SCAL]"), t("  "), i(3, "[ADCN]"), crlf(),
+                                t("        2  "), i(4, "[ARG]"), t("  "), i(5, "[SCAL]"), t("  "), i(6, "[ADCN]") })
             end
-        end, k("Type")),
+        end, 3),
         ---- CF_FORMULA ----
-        condition_node(7, nil, k("Type"), function (args) return (args[1][1] == "Formula") end, {
-            t("CF_FORMULA  3  "), quoted_insert(1, nil, "[FORMULA]"), crlf(),
-            t("            1  "), i(2, "[X]"), t("  "), i(3, "[ARG]"), crlf(),
-            t("            2  "), i(4, "[Y]"), t("  "), i(5, "[ARG]"), crlf(),
-            t("            3  "), i(6, "[Z]"), t("  "), i(7, "[ARG]")
-        })
+        d(7, function(args)
+            if (args[1][1] ~= "Formula") then
+                return s(nil, t(""))
+            else
+                return s(nil, { t("CF_FORMULA  3  "), qi(1, "[FORMULA]"), crlf(),
+                                t("            1  "), i(2, "[X]"), t("  "), i(3, "[ARG]"), crlf(),
+                                t("            2  "), i(4, "[Y]"), t("  "), i(5, "[ARG]"), crlf(),
+                                t("            3  "), i(6, "[Z]"), t("  "), i(7, "[ARG]") })
+            end
+        end, 3)
     }),
     ---- Tabular Function ----
     snippet({ trig = "TF_ID", desc = "Tabular Function" }, {
         ---- TF_ID ----
-        t("TF_ID   "), quoted_insert(1, nil, "[NAME]"), t("  "), i(2, "[SCAL]"), t("  "), i(3, "[ADCN]"), crlf(),
+        t("TF_ID   "), qi(1, "[NAME]"), t("  "), i(2, "[SCAL]"), t("  "), i(3, "[ADCN]"), crlf(),
         ---- TF_TAB ----
         t("TF_TAB  1"), crlf(), t("        1  "), i(4, "[X]"), t("  "), i(5, "[Y]")
     })
