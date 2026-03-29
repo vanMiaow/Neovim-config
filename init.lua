@@ -9,7 +9,6 @@ else
 end
 
 -- todo
--- melcor treesitter
 -- xmake?
 
 -- vim.o
