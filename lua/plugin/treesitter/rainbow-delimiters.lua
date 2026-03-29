@@ -2,7 +2,6 @@
 return {
     "HiPhish/rainbow-delimiters.nvim",
     name = "rainbow-delimiters",
-    version = false,
     cond = not vim.g.vscode,
     submodules = false,
     main = "rainbow-delimiters.setup",

@@ -2,7 +2,6 @@
 return {
     "catppuccin/nvim",
     name = "catppuccin",
-    version = false,
     cond = not vim.g.vscode,
     opts = {
         dim_inactive = {

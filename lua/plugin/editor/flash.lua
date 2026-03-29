@@ -2,7 +2,6 @@
 return {
     "folke/flash.nvim",
     name = "flash",
-    version = false,
     cond = not vim.g.vscode,
     opts = {
         modes = {

@@ -2,7 +2,7 @@
 return {
     "saghen/blink.cmp",
     name = "blink-cmp",
-    version = "*", -- to use prebuilt binary
+    version = "1.*", -- to use prebuilt binary, switch to v2 when released
     cond = not vim.g.vscode,
     opts = {
         completion = {

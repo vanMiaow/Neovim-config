@@ -16,7 +16,6 @@ end
 return {
     "isakbm/gitgraph.nvim",
     name = "gitgraph",
-    version = false,
     cond = not vim.g.vscode,
     opts = {
         symbols = {

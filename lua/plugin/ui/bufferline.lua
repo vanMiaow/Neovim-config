@@ -42,7 +42,6 @@ end
 return {
     "akinsho/bufferline.nvim",
     name = "bufferline",
-    version = false,
     cond = not vim.g.vscode,
     init = function()
         -- hover

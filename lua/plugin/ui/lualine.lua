@@ -2,7 +2,6 @@
 return {
     "nvim-lualine/lualine.nvim",
     name = "lualine",
-    version = false,
     cond = not vim.g.vscode,
     init = function()
         -- mode
@@ -11,7 +10,7 @@ return {
     end,
     opts = {
         options = {
-            theme = "catppuccin",
+            theme = "catppuccin-nvim",
             section_separators = { left = "", right = "" }, -- nf-ple-left_half_circle_thick, nf-ple-right_half_circle_thick
             component_separators = { left = "", right = "" },
             ignore_focus = { "neo-tree" },

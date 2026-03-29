@@ -42,7 +42,6 @@ end
 return {
     "L3MON4D3/LuaSnip",
     name = "luasnip",
-    version = false,
     cond = not vim.g.vscode,
     opts = {},
     config = function(_,opts)

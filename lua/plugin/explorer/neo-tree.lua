@@ -18,7 +18,6 @@ end
 return {
     "nvim-neo-tree/neo-tree.nvim",
     name = "neo-tree",
-    version = false,
     cond = not vim.g.vscode,
     init = function()
         -- disable netrw

@@ -2,7 +2,6 @@
 return {
     "echasnovski/mini.align",
     name = "mini-align",
-    version = false,
     -- cond = not vim.g.vscode,
     main = "mini.align",
     opts = {

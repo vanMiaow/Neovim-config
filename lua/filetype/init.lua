@@ -7,7 +7,7 @@ local filetypes = {
 }
 
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-    group = "filetypedetect",
+    group = vim.api.nvim_create_augroup("vm", { clear = false }),
     callback = function(args)
         -- return if invalid buffer
         if (not vim.api.nvim_buf_is_valid(args.buf)) then

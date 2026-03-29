@@ -2,7 +2,6 @@
 return {
     "folke/noice.nvim",
     -- name = "noice", -- disabled to avoid duplication with MunifTanjim/noice.nvim/lazy.lua
-    version = false,
     cond = not vim.g.vscode,
     opts = {
         cmdline = {

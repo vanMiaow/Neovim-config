@@ -2,7 +2,6 @@
 return {
     "echasnovski/mini.surround",
     name = "mini-surround",
-    version = false,
     -- cond = not vim.g.vscode,
     main = "mini.surround",
     opts = {

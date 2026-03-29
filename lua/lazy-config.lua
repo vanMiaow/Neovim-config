@@ -44,7 +44,7 @@ require("lazy").setup({
 -- return {
 --     url
 --     name
---     version
+--     version?
 --     submodules?
 --     cond?
 --     main?

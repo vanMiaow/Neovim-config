@@ -2,7 +2,6 @@
 return {
     "lukas-reineke/indent-blankline.nvim",
     name = "indent-blankline",
-    version = false,
     cond = not vim.g.vscode,
     opts = {
         debounce = 10,

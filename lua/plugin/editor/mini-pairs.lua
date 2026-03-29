@@ -2,7 +2,6 @@
 return {
     "echasnovski/mini.pairs",
     name = "mini-pairs",
-    version = false,
     cond = not vim.g.vscode,
     main = "mini.pairs",
     opts = {

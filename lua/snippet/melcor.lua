@@ -188,7 +188,7 @@ return {
         ---- FL_FT ----
         t("FL_FT   "), qi(3, "[CVFM]"), t("  "), qi(4, "[CVTO]"), t("  "), i(5, "[ZFM]"), t("  "), fi(6, 5, "[ZTO]"), crlf(),
         ---- FL_GEO ----
-        t("FL_GEO  "), i(7, "[AREA]"), t("  "), i(8, "[LEN]"), t("  "), i(9, "[OPEN]"), t("  "), fi(10, 7, "[HFM]", a2d, 6), t("  "), fi(11, 7, "[HTO]", a2d, 6), crlf(),
+        t("FL_GEO  "), i(7, "[AREA]"), t("  "), i(8, "[LEN]"), t("  "), i(9, "[OPEN]"), t("  "), fi(10, 7, "[HFM]", a2d, 6), t("  "), fi(11, 10, "[HTO]"), crlf(),
         ---- FL_JSW ----
         t("FL_JSW  "), c(12, { t("0"), t("3") }), t("  NoBubbleRise  NoBubbleRise ! 0-vert 3-horiz"), crlf(),
         ---- FL_USL ----

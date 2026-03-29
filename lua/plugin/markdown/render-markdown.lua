@@ -2,7 +2,6 @@
 return {
     "MeanderingProgrammer/render-markdown.nvim",
     name = "render-markdown",
-    version = false,
     cond = not vim.g.vscode,
     opts = {
         latex = {
