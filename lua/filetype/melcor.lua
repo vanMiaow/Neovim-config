@@ -12,6 +12,15 @@ function module.setup(buf)
     end
     -- set filetype
     vim.bo[buf].filetype = "melcor"
+    -- set comment string
+    local extension = vim.api.nvim_buf_get_name(buf):match("([^./\\]+)$"):lower()
+    local prefix
+    if (extension == "mpp") then
+        prefix = "//"
+    else
+        prefix = "!"
+    end
+    vim.bo[buf].commentstring = prefix .. " %s"
     -- align table
     vim.keymap.set({ "n", "x" }, "<localleader>a", module.align_table, { buffer = buf, expr = true, remap = true, desc = "Align table" })
     return

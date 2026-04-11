@@ -14,7 +14,7 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
             return
         end
         -- get extension
-        local extension = args.file:match("([^.]+)$"):lower()
+        local extension = args.file:match("([^./\\]+)$"):lower()
         -- get filetype
         local filetype
         for ft, exts in pairs(filetypes) do
