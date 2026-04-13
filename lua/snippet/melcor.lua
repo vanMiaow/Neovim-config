@@ -309,7 +309,7 @@ return {
             end
         end, 19), crlf(),
         ---- HS_RBP ----
-        t("HS_RBP  Int  0.05  0.95"),
+        t("HS_RBP  Ext  0.05  0.95"),
         ---- HB_RBS ----
         d(23, function(args)
             if (args[1][1] == "" or args[1][1] == "  No") then
