@@ -17,7 +17,8 @@ return {
         },
         query = {
             lua = "rainbow-blocks",
-            latex = "rainbow-blocks"
+            latex = "rainbow-blocks",
+            query = "rainbow-blocks"
         }
     },
     lazy = false

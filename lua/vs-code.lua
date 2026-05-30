@@ -14,6 +14,10 @@ vim.keymap.set({ "n", "x", "o" }, "/", function() vim.opt.hlsearch = true return
 vim.keymap.set({ "n", "x", "o" }, "?", function() vim.opt.hlsearch = true return "?" end, { expr = true, desc = "Search backward" })
 vim.keymap.set({ "n", "x", "o" }, "n", function() vim.opt.hlsearch = true return "n" end, { expr = true, desc = "Next match" })
 vim.keymap.set({ "n", "x", "o" }, "N", function() vim.opt.hlsearch = true return "N" end, { expr = true, desc = "Previous match" })
+-- incremental selection
+vim.keymap.set("n", "<cr>", "vin", { remap = true, desc = "Select current node" })
+vim.keymap.set("x", "<cr>", "an", { remap = true, desc = "Select parent node" })
+vim.keymap.set("x", "<bs>", "in", { remap = true, desc = "Select child node" })
 
 -- leader
 vim.g.mapleader = " "
@@ -28,6 +32,10 @@ vim.keymap.set({ "n", "x" }, "<leader>rp", require("script.replace").replace_mod
 -- local leader
 -- for filetype keymap only
 vim.g.maplocalleader = ","
+
+-- [filetype]
+
+require("filetype.melcor").register()
 
 -- [lazy-config]
 
@@ -59,10 +67,6 @@ require("lazy").setup({
 
 -- bufferline
 vim.keymap.set("n", "<leader>w", "<cmd>w<cr>", { desc = "Write buffer" })
-
--- [filetype]
-
-require("filetype")
 
 -- [end]
 

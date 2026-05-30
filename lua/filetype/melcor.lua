@@ -2,27 +2,37 @@
 -- module
 local module = {}
 
+-- register
+function module.register()
+    vim.filetype.add({
+        extension = {
+            mel = "melcor",
+            mpp = "melcor"
+        },
+        filename = {
+            ["MELINP_v2-0"] = "melcor"
+        }
+    })
+end
+
 -- setup
-function module.setup(buf)
+function module.setup()
     -- pragma once
-    if (vim.b[buf].filetype_set) then
+    if (vim.b.vm_filetype_set) then
         return
     else
-        vim.b[buf].filetype_set = true
+        vim.b.vm_filetype_set = true
     end
-    -- set filetype
-    vim.bo[buf].filetype = "melcor"
-    -- set comment string
-    local extension = vim.api.nvim_buf_get_name(buf):match("([^./\\]+)$"):lower()
-    local prefix
-    if (extension == "mpp") then
-        prefix = "//"
+    -- highlight
+    vim.treesitter.start()
+    -- comment string
+    if (vim.fs.ext(vim.api.nvim_buf_get_name(0)) == "mpp") then
+        vim.bo.commentstring = "// %s"
     else
-        prefix = "!"
+        vim.bo.commentstring = "! %s"
     end
-    vim.bo[buf].commentstring = prefix .. " %s"
     -- align table
-    vim.keymap.set({ "n", "x" }, "<localleader>a", module.align_table, { buffer = buf, expr = true, remap = true, desc = "Align table" })
+    vim.keymap.set({ "n", "x" }, "<localleader>a", module.align_table, { buffer = 0, expr = true, remap = true, desc = "Align table" })
     return
 end
 

@@ -1,11 +1,11 @@
 
 if (vim.g.vscode) then
-    require("vsc")
+    require("vs-code")
 else
     require("option")
     require("keymap")
-    require("lazy-config")
     require("filetype")
+    require("lazy-config")
 end
 
 -- todo

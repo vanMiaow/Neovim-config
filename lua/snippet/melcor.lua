@@ -109,7 +109,7 @@ return {
         ---- CV_FLD ----
         t("CV_FLD  "), c(3, { t("Water"), t("LBE") }), crlf(),
         ---- CV_THR ----
-        t("CV_THR  NonEquil  Fog  "), c(4, { t("Active"), t("Time-Indep"), t("Prop-Specified") }), crlf(),
+        t("CV_THR  NonEquil  NoFog  "), c(4, { t("Active"), t("Time-Indep"), t("Prop-Specified") }), crlf(),
         ---- CV_PAS ----
         t("CV_PAS  Separate  "), c(5, { t("PoolAndAtm"), t("OnlyPool"), t("OnlyAtm") }), d(6, function(args)
             if (args[1][1] == "OnlyAtm") then

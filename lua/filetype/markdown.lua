@@ -3,18 +3,18 @@
 local module = {}
 
 -- setup
-function module.setup(buf)
+function module.setup()
     -- pragma once
-    if (vim.b[buf].filetype_set) then
+    if (vim.b.vm_filetype_set) then
         return
     else
-        vim.b[buf].filetype_set = true
+        vim.b.vm_filetype_set = true
     end
-    -- disable treesitter highlight
-    module.toggle_highlight()
-    vim.keymap.set("n", "<localleader>h", module.toggle_highlight, { buffer = buf, desc = "Toggle highlight" })
+    -- toggle highlight
+    -- module.toggle_highlight()
+    vim.keymap.set("n", "<localleader>h", module.toggle_highlight, { buffer = 0, desc = "Toggle highlight" })
     -- align table
-    vim.keymap.set("n", "<localleader>a", module.align_table, { buffer = buf, expr = true, remap = true, desc = "Align table" })
+    vim.keymap.set("n", "<localleader>a", module.align_table, { buffer = 0, expr = true, remap = true, desc = "Align table" })
     return
 end
 
@@ -28,14 +28,13 @@ end
 
 -- toggle highlight
 function module.toggle_highlight()
-    if (vim.bo.syntax == "off") then
-        -- enable
-        vim.cmd("TSBufEnable highlight")
-        vim.bo.syntax = "markdown"
-    else
+    if (vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()]) then
         -- disable
-        vim.cmd("TSBufDisable highlight")
-        vim.bo.syntax = "off"
+        vim.treesitter.stop()
+        vim.bo.syntax = ""
+    else
+        -- enable
+        vim.treesitter.start()
     end
     return
 end

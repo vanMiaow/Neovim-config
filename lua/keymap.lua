@@ -6,6 +6,10 @@ vim.keymap.set("n", "<esc>", function() vim.opt.hlsearch = false return "<esc>" 
 -- vim.keymap.set({ "n", "x", "o" }, "?", function() vim.opt.hlsearch = true return "?" end, { expr = true, desc = "Search backward" }) -- handled by flash now
 vim.keymap.set({ "n", "x", "o" }, "n", function() vim.opt.hlsearch = true return "n" end, { expr = true, desc = "Next match" })
 vim.keymap.set({ "n", "x", "o" }, "N", function() vim.opt.hlsearch = true return "N" end, { expr = true, desc = "Previous match" })
+-- incremental selection
+vim.keymap.set("n", "<cr>", "vin", { remap = true, desc = "Select current node" })
+vim.keymap.set("x", "<cr>", "an", { remap = true, desc = "Select parent node" })
+vim.keymap.set("x", "<bs>", "in", { remap = true, desc = "Select child node" })
 -- term
 vim.keymap.set("t", "<c-e>", "<c-\\><c-n>", { desc = "Exit terminal mode" })
 

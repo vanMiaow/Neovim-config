@@ -12,25 +12,15 @@ function module.tofloat(number, digit)
     return (("%." .. (digit or 10) .. "f"):format(number):match("^(.-)0*$"):gsub("%.$", ".0"))
 end
 
--- contains
-function module.contains(list, var)
-    for _, value in ipairs(list) do
-        if (value == var) then
-            return true
-        end
-    end
-    return false
-end
-
 -- get inputs
-function module.get_inputs(prompt, default, cancelreturn, delimeter)
+function module.get_inputs(prompt, default, cancelreturn, delimiter)
     local inputs = vim.split(
         vim.fn.input({
             prompt = prompt or "",
             default = default or "",
             cancelreturn = cancelreturn or ""
         }),
-        delimeter or " ",
+        delimiter or " ",
         { trimempty = true }
     )
     return unpack(inputs)
@@ -57,8 +47,7 @@ function module.process_lines(process, from, to)
     end
     log = log .. ": "
     -- split chunks
-    -- local MAX_SIZE = 1024
-    local MAX_SIZE = 10
+    local MAX_SIZE = 1024
     local total = to - from + 1
     local chunks = math.ceil(total / MAX_SIZE)
     local size = math.ceil(total / chunks)
@@ -74,7 +63,7 @@ function module.process_lines(process, from, to)
         -- get chunk lines
         local lines = vim.api.nvim_buf_get_lines(0, chunk_from - 1, chunk_to, true)
         -- process chunk lines
-        result, modified = process(lines)
+        local result, modified = process(lines)
         -- set chunk lines
         if (modified) then
             vim.api.nvim_buf_set_lines(0, chunk_from - 1, chunk_to, true, lines)

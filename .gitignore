@@ -2,5 +2,6 @@
 !/.gitignore
 !/init.lua
 !/doc/
+!/ftplguin/
 !/lua/
 /lua/plugin/lazy-lock.json
