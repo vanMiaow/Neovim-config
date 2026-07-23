@@ -26,10 +26,12 @@ function module.setup()
     -- highlight
     vim.treesitter.start()
     -- comment string
-    if (vim.fs.ext(vim.api.nvim_buf_get_name(0)) == "mpp") then
+    if (vim.fs.ext(vim.api.nvim_buf_get_name(0)) == "mel") then
+        vim.bo.commentstring = "! %s"
+    elseif (vim.fs.ext(vim.api.nvim_buf_get_name(0)) == "mpp") then
         vim.bo.commentstring = "// %s"
     else
-        vim.bo.commentstring = "! %s"
+        vim.bo.commentstring = "// %s"
     end
     -- align table
     vim.keymap.set({ "n", "x" }, "<localleader>a", module.align_table, { buffer = 0, expr = true, remap = true, desc = "Align table" })
