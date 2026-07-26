@@ -7,7 +7,7 @@ return {
     opts = {
         modes = { insert = true, command = true, terminal = true },
         mappings = {
-            [" "] = { action = "open", pair = "  ", neigh_pattern = "[([{].", register = { bs = false, cr = false } }
+            [" "] = { action = "open", pair = "  ", neigh_pattern = "[<([{$]." }
         }
     },
     lazy = true,
